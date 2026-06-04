@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
     try {
         const mailOptions = {
             from: process.env.EMAIL_USER,
-            to: 'elopermis77@gmail.com', // Le mail de réception final
+            to: 'nathan.pro.po@gmail.com', // Le mail de réception final
             replyTo: email,
             subject: `Nouvelle inscription sur le site - ${formula}`,
             html: `
