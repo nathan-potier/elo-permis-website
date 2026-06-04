@@ -725,13 +725,11 @@
                     <h4 class="text-white font-semibold mb-3 text-xs uppercase tracking-wider">Mentions Légales</h4>
                     <p class="text-xs leading-relaxed">
                         © 2026 Elo'Permis Auto-École. Tous droits réservés.<br>
-                        Géré avec passion par Élodie à Saint-Mard (77).<br>
-                        Agrément préfectoral en cours de validité.
                     </p>
                 </div>
             </div>
             <div class="pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4">
-                <span>Conçu de manière éco-responsable (Sans maintenance ni scripts lourds)</span>
+                <span>Conçu par RAMANATHAN Jonas & POTIER Nathan</span>
                 <a href="#" class="hover:text-white flex items-center space-x-1"><i class="fa-solid fa-arrow-up"></i> <span>Retour en haut</span></a>
             </div>
         </div>
@@ -759,14 +757,53 @@
         const form = document.getElementById('contactForm');
         const successAlert = document.getElementById('successAlert');
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Perform basic animations or fields clear
-            form.reset();
-            successAlert.classList.remove('hidden');
-            
-            // Auto scroll slightly to make alert visible
-            successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // On récupère les valeurs des champs
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                formula: document.getElementById('formula').value,
+                message: document.getElementById('message').value
+            };
+
+            // Optionnel : Changer le texte du bouton pendant l'envoi
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnContent = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Envoi en cours...';
+            submitBtn.disabled = true;
+
+            try {
+                // On appelle NOTRE API Vercel
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    form.reset();
+                    successAlert.classList.remove('hidden');
+                    successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    
+                    setTimeout(() => {
+                        successAlert.classList.add('hidden');
+                    }, 6000);
+                } else {
+                    alert('Une erreur est survenue côté serveur. Veuillez réessayer.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Erreur de connexion. Vérifiez votre réseau.');
+            } finally {
+                // Restaurer le bouton
+                submitBtn.innerHTML = originalBtnContent;
+                submitBtn.disabled = false;
+            }
         });
     </script>
 </body>
